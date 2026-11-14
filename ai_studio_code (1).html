@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#d97706" />
+  <title>प्रेम प्रतीक पुष्प | सामाजिक सहयोग तंत्र</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --primary: #d97706;
+      --primary-dark: #b45309;
+      --accent: #0f766e;
+      --bg: #fffbeb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #fde68a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding-bottom: 86px; line-height: 1.5; }
+    .topbar {
+      background: linear-gradient(135deg, #b45309, #d97706, #0f766e);
+      color: #fff; padding: 14px 16px; position: sticky; top: 0; z-index: 50;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+    }
+    .topbar-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .brand-sub { font-size: 11px; letter-spacing: 0.5px; opacity: 0.92; font-weight: 600; }
+    .brand-title { font-size: 18px; font-weight: 800; }
+    .lang-btn {
+      background: rgba(255,255,255,0.2); color: #fff; border: 1px solid rgba(255,255,255,0.45);
+      padding: 6px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer;
+    }
+    .container { max-width: 600px; margin: 0 auto; padding: 14px; }
+    .card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 16px; margin-bottom: 14px; box-shadow: 0 2px 8px rgba(217,119,6,0.06);
+    }
+    .slogan-box {
+      background: linear-gradient(135deg, #fef3c7, #ecfdf5);
+      border-left: 5px solid var(--primary); padding: 14px; border-radius: 12px; margin-bottom: 14px;
+    }
+    .main-slogan { font-size: 15px; font-weight: 800; color: #92400e; margin-bottom: 6px; }
+    .sub-slogans { font-size: 12.5px; color: #065f46; padding-left: 16px; }
+    .sub-slogans li { margin-bottom: 3px; }
+    .disclaimer {
+      background: #fef2f2; border: 1px solid #fecaca; color: #991b1b;
+      font-size: 12px; padding: 10px 12px; border-radius: 10px; margin-bottom: 14px; font-weight: 600;
+    }
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+    .stat-box {
+      background: #fff7ed; border: 1px solid #fed7aa; border-radius: 12px;
+      padding: 10px 6px; text-align: center;
+    }
+    .stat-num { font-size: 20px; font-weight: 800; color: var(--primary-dark); }
+    .stat-lbl { font-size: 11px; color: var(--muted); font-weight: 600; }
+    h2 { font-size: 17px; color: #78350f; margin-bottom: 10px; }
+    input, textarea, select {
+      width: 100%; padding: 11px 12px; border: 1px solid #d1d5db; border-radius: 10px;
+      font-size: 14px; margin-bottom: 10px; background: #fff;
+    }
+    .btn {
+      width: 100%; padding: 12px; border: none; border-radius: 12px; font-size: 15px;
+      font-weight: 700; cursor: pointer; background: var(--primary); color: #fff; transition: 0.2s;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn:disabled { background: #9ca3af; cursor: not-allowed; }
+    .btn-teal { background: var(--accent); }
+    .btn-outline { background: #fff; color: var(--primary-dark); border: 1.5px solid var(--primary); }
+    .btn-sm { padding: 8px 12px; font-size: 13px; width: auto; display: inline-block; flex-shrink: 0; }
+    .deed-item {
+      border: 1px solid #fde68a; background: #fffdf5; padding: 12px; border-radius: 12px;
+      margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 10px;
+    }
+    .deed-text { font-size: 14px; font-weight: 600; flex: 1; }
+    .id-card {
+      background: linear-gradient(135deg, #fffbeb, #fef3c7 50%, #d1fae5);
+      border: 2px solid #d97706; border-radius: 18px; padding: 18px; position: relative;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    }
+    .id-header { text-align: center; border-bottom: 1.5px dashed #d97706; padding-bottom: 10px; margin-bottom: 12px; }
+    .id-row { display: flex; justify-content: space-between; margin-bottom: 7px; font-size: 14px; }
+    .nav-bottom {
+      position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid #e5e7eb;
+      display: flex; justify-content: space-around; padding: 6px 2px; z-index: 60;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.06);
+    }
+    .nav-btn {
+      background: none; border: none; display: flex; flex-direction: column; align-items: center;
+      font-size: 10.5px; color: var(--muted); cursor: pointer; padding: 4px 6px; font-weight: 600;
+    }
+    .nav-btn.active { color: var(--primary-dark); font-weight: 800; }
+    .nav-icon { font-size: 19px; margin-bottom: 2px; }
+    .hidden { display: none !important; }
+    .toast {
+      position: fixed; top: 72px; left: 50%; transform: translateX(-50%);
+      background: #1f2937; color: #fff; padding: 10px 16px; border-radius: 25px;
+      font-size: 13px; font-weight: 600; z-index: 100; max-width: 90%; text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .iq-opt {
+      display: block; width: 100%; text-align: left; padding: 10px 12px; margin-bottom: 7px;
+      border: 1px solid #cbd5e1; border-radius: 10px; background: #f8fafc; font-size: 14px; cursor: pointer;
+    }
+    .link-chip {
+      display: block; text-decoration: none; color: #0f766e; background: #f0fdfa;
+      border: 1px solid #99f6e4; padding: 12px; border-radius: 12px; margin-bottom: 8px;
+      font-weight: 700; font-size: 14px;
+    }
+    @media print {
+      .topbar, .nav-bottom, .no-print { display: none !important; }
+      body { padding: 0; background: #fff; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- शीर्ष पट्टी -->
+  <header class="topbar">
+    <div class="topbar-row">
+      <div>
+        <div class="brand-sub" data-i18n="org">सामाजिक सहयोग तंत्र की प्रस्तुति</div>
+        <div class="brand-title">🌸 <span data-i18n="appName">प्रेम प्रतीक पुष्प (PPP)</span></div>
+      </div>
+      <div style="display:flex; gap:6px; align-items:center;">
+        <button class="lang-btn" onclick="toggleLang()" id="langBtn">EN / हिंदी</button>
+        <button class="lang-btn hidden" id="logoutBtn" onclick="logoutUser()" title="Logout">🚪</button>
+      </div>
+    </div>
+  </header>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <div class="container">
+
+    <!-- नारे और स्पष्ट घोषणा -->
+    <div class="slogan-box">
+      <div class="main-slogan" data-i18n="mainSlogan">“समाज का हाथ पकड़ लो, किसी के पैर पकड़ने की आवश्यकता नहीं पड़ेगी”</div>
+      <ul class="sub-slogans">
+        <li data-i18n="s1">प्रत्येक के चेहरे पर मुस्कान और नई मनुष्यता का निर्माण</li>
+        <li data-i18n="s2">हमारी दुनिया हम ही संवारे, ज्ञान से, विज्ञान से, जी जान से</li>
+        <li data-i18n="s3">विकास की युक्ति, गरीबी से मुक्ति</li>
+      </ul>
+    </div>
+
+    <div class="disclaimer" data-i18n="disclaimer">
+      ⚠️ स्पष्ट घोषणा: “प्रेम प्रतीक / पुष्प” केवल अच्छे सामाजिक कार्यों के सम्मान के प्रतीकात्मक अंक हैं। यह किसी भी प्रकार की मुद्रा, सिक्का, डिजिटल या फिजिकल करेंसी अथवा धन नहीं है।
+    </div>
+
+    <!-- लॉगिन / रजिस्ट्रेशन स्क्रीन -->
+    <section id="authSection" class="card">
+      <h2 id="authTitle" data-i18n="loginTitle">सदस्य प्रवेश / नया पंजीकरण</h2>
+      <div id="nameWrap" class="hidden">
+        <input type="text" id="fullNameInput" placeholder="आपका पूरा नाम (Full Name)" />
+      </div>
+      <input type="email" id="emailInput" placeholder="ईमेल (Email)" />
+      <input type="password" id="passwordInput" placeholder="पासवर्ड (कम से कम 6 अक्षर)" />
+      <button class="btn" id="authActionBtn" onclick="handleAuth()">लॉगिन करें (Login)</button>
+      <div style="text-align:center; margin-top:12px;">
+        <button class="btn btn-outline btn-sm" onclick="toggleAuthMode()" id="toggleAuthBtn">नया खाता बनाएं (Register)</button>
+      </div>
+    </section>
+
+    <!-- मुख्य ऐप स्क्रीन (लॉगिन के बाद) -->
+    <main id="appSection" class="hidden">
+
+      <!-- यूजर के पुष्प अंक -->
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-num" id="statPushp">0</div>
+          <div class="stat-lbl" data-i18n="lblPushp">🌸 कुल पुष्प अंक</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="statToday">0 / 3</div>
+          <div class="stat-lbl" data-i18n="lblToday">📅 आज के मौके</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="statDeeds">0</div>
+          <div class="stat-lbl" data-i18n="lblDeeds">✅ कुल अच्छे काम</div>
+        </div>
+      </div>
+
+      <!-- टैब 1: होम और अच्छा काम घोषणा -->
+      <section id="tab-home" class="tab-pane">
+        <div class="card">
+          <h2 data-i18n="declareTitle">🌟 आज का अच्छा सामाजिक कार्य घोषित करें</h2>
+          <p style="font-size:13px; color:var(--muted); margin-bottom:10px;" data-i18n="declareDesc">
+            रोज़ाना अधिकतम 3 अच्छे कार्यों की घोषणा कर सकते हैं। हर कार्य पर +10 प्रेम प्रतीक पुष्प अंक मिलेंगे।
+          </p>
+          <input type="text" id="customDeedInput" placeholder="अपना अच्छा कार्य लिखें या '100 काम' सूची से चुनें..." />
+          <button class="btn" id="submitDeedBtn" onclick="declareDeedFromInput()">🌸 अच्छा कार्य घोषित करें (+10 पुष्प)</button>
+        </div>
+
+        <div class="card">
+          <h2 data-i18n="recentTitle">🕒 आपके आज के घोषित कार्य</h2>
+          <div id="todayLogsList" style="font-size:13.5px; color:var(--muted);">लोड हो रहा है...</div>
+        </div>
+      </section>
+
+      <!-- टैब 2: 100 अच्छे कामों की सूची -->
+      <section id="tab-deeds" class="tab-pane hidden">
+        <div class="card">
+          <h2 data-i18n="deedsListTitle">📜 100 अच्छे कामों की सूची</h2>
+          <input type="text" id="deedSearch" oninput="renderDeeds()" placeholder="अच्छा काम खोजें (Search)..." />
+          <div id="deedsListContainer">डेटा लोड हो रहा है...</div>
+        </div>
+      </section>
+
+      <!-- टैब 3: पहचान पत्र -->
+      <section id="tab-id" class="tab-pane hidden">
+        <div class="id-card">
+          <div class="id-header">
+            <div style="font-size:12px; font-weight:800; color:#0f766e;">सामाजिक सहयोग तंत्र</div>
+            <div style="font-size:19px; font-weight:900; color:#92400e;" data-i18n="idTitle">सदस्य पहचान पत्र (Pehchan Patra)</div>
+            <div style="font-size:11px; color:#78350f;">प्रेम प्रतीक पुष्प (PPP)</div>
+          </div>
+          <div class="id-row"><strong data-i18n="idName">नाम:</strong> <span id="idCardName">-</span></div>
+          <div class="id-row"><strong data-i18n="idCode">सहयोग कोड:</strong> <span id="idCardCode" style="font-weight:800; color:#0f766e;">-</span></div>
+          <div class="id-row"><strong data-i18n="idPushp">प्रेम प्रतीक पुष्प:</strong> <span id="idCardPushp" style="font-weight:800; color:#b45309;">0 🌸</span></div>
+          <div class="id-row"><strong data-i18n="idDeeds">कुल अच्छे कार्य:</strong> <span id="idCardDeeds">0</span></div>
+          <div style="margin-top:12px; padding-top:10px; border-top:1px dashed #d97706; text-align:center; font-size:11.5px; font-weight:700; color:#78350f;">
+            “समाज का हाथ पकड़ लो, किसी के पैर पकड़ने की आवश्यकता नहीं पड़ेगी”
+          </div>
+          <div style="text-align:center; font-size:10px; color:#991b1b; margin-top:6px;">
+            *केवल सम्मान प्रतीक अंक (कोई मुद्रा/धन नहीं)
+          </div>
+        </div>
+        <button class="btn btn-teal no-print" style="margin-top:12px;" onclick="window.print()" data-i18n="printId">🖨️ पहचान पत्र सेव / प्रिंट करें</button>
+      </section>
+
+      <!-- टैब 4: ई-बुक और TTS -->
+      <section id="tab-ebooks" class="tab-pane hidden">
+        <div class="card">
+          <h2 data-i18n="ebookTitle">📚 ई-बुक कॉर्नर और बोलकर सुनने की सुविधा (TTS)</h2>
+          <p style="font-size:13px; color:var(--muted); margin-bottom:10px;">
+            नीचे अपनी ई-बुक पढ़ें या कोई भी लेख पेस्ट करके “सुनें” दबाएं। पढ़ने/सुनने पर पुष्प भी मिलेंगे!
+          </p>
+          <a class="link-chip" href="https://samajiksahyogtantra.in" target="_blank" rel="noopener">📖 मेरी ई-बुक्स देखें — samajiksahyogtantra.in ↗</a>
+          <label style="font-size:12.5px; font-weight:700; display:block; margin:10px 0 4px;">बोलकर सुनने (TTS) के लिए पाठ:</label>
+          <textarea id="ttsText" rows="5">समाज का हाथ पकड़ लो, किसी के पैर पकड़ने की आवश्यकता नहीं पड़ेगी। प्रत्येक के चेहरे पर मुस्कान और नई मनुष्यता का निर्माण ही हमारा संकल्प है। हमारी दुनिया हम ही संवारे, ज्ञान से, विज्ञान से, जी जान से। विकास की युक्ति, गरीबी से मुक्ति।</textarea>
+          <div style="display:flex; gap:8px;">
+            <button class="btn btn-teal" onclick="speakText()">🔊 सुनें (Play TTS)</button>
+            <button class="btn btn-outline" onclick="stopSpeech()">⏹️ रोकें</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- टैब 5: बच्चों का IQ कॉर्नर और लिंक -->
+      <section id="tab-iq" class="tab-pane hidden">
+        <div class="card">
+          <h2 data-i18n="iqTitle">🧠 बच्चों का IQ कॉर्नर (पज़ल)</h2>
+          <div id="iqQuestion" style="font-size:15px; font-weight:700; margin-bottom:10px;"></div>
+          <div id="iqOptions"></div>
+          <div id="iqFeedback" style="font-size:13.5px; font-weight:700; margin-top:8px;"></div>
+          <button class="btn btn-outline btn-sm" style="margin-top:10px;" onclick="nextPuzzle()">अगला पज़ल ➡️</button>
+        </div>
+
+        <div class="card">
+          <h2 data-i18n="linksTitle">🌐 आधिकारिक वेबसाइट व सोशल मीडिया</h2>
+          <a class="link-chip" href="https://samajiksahyogtantra.in" target="_blank" rel="noopener">🌐 वेबसाइट: samajiksahyogtantra.in</a>
+          <a class="link-chip" href="https://youtube.com" target="_blank" rel="noopener">▶️ YouTube चैनल (सामाजिक सहयोग तंत्र)</a>
+          <a class="link-chip" href="https://facebook.com" target="_blank" rel="noopener">📘 Facebook पेज</a>
+          <a class="link-chip" href="https://whatsapp.com" target="_blank" rel="noopener">💬 WhatsApp समुदाय</a>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- नीचे नेविगेशन बार -->
+  <nav class="nav-bottom hidden" id="bottomNav">
+    <button class="nav-btn active" onclick="switchTab('home', this)"><span class="nav-icon">🏠</span><span data-i18n="navHome">संकल्प</span></button>
+    <button class="nav-btn" onclick="switchTab('deeds', this)"><span class="nav-icon">📜</span><span data-i18n="navDeeds">100 काम</span></button>
+    <button class="nav-btn" onclick="switchTab('id', this)"><span class="nav-icon">🪪</span><span data-i18n="navId">पहचान पत्र</span></button>
+    <button class="nav-btn" onclick="switchTab('ebooks', this)"><span class="nav-icon">📚</span><span data-i18n="navEbook">ई-बुक</span></button>
+    <button class="nav-btn" onclick="switchTab('iq', this)"><span class="nav-icon">🧠</span><span data-i18n="navIq">IQ व लिंक</span></button>
+  </nav>
+
+  <script>
+    // =========================================================
+    // ✅ आपकी दोनों Supabase चाबियाँ और टेबल नाम सेट कर दिए गए हैं
+    // =========================================================
+    const CONFIG = {
+      SUPABASE_URL: "https://ldgbaustswrbwscjpkul.supabase.co",
+      SUPABASE_ANON_KEY: "sb_publishable_k7LTHED2dw5KDpKIvY9Cqw_79vBE4Wk",
+      DEEDS_TABLE: "ppp_tasks"
+    };
+
+    const sb = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+
+    let currentUser = null;
+    let isRegisterMode = false;
+    let currentLang = "hi";
+    let allDeeds = [];
+    let todayCount = 0;
+    let puzzleIndex = 0;
+    let solvedPuzzles = new Set();
+    let isSubmitting = false;
+    let pendingRegisterName = "";
+
+    const i18n = {
+      hi: {
+        org: "सामाजिक सहयोग तंत्र की प्रस्तुति",
+        appName: "प्रेम प्रतीक पुष्प (PPP)",
+        mainSlogan: "“समाज का हाथ पकड़ लो, किसी के पैर पकड़ने की आवश्यकता नहीं पड़ेगी”",
+        s1: "प्रत्येक के चेहरे पर मुस्कान और नई मनुष्यता का निर्माण",
+        s2: "हमारी दुनिया हम ही संवारे, ज्ञान से, विज्ञान से, जी जान से",
+        s3: "विकास की युक्ति, गरीबी से मुक्ति",
+        disclaimer: "⚠️ स्पष्ट घोषणा: “प्रेम प्रतीक / पुष्प” केवल अच्छे सामाजिक कार्यों के सम्मान के प्रतीकात्मक अंक हैं। यह किसी भी प्रकार की मुद्रा, सिक्का, डिजिटल या फिजिकल करेंसी अथवा धन नहीं है।",
+        loginTitle: "सदस्य प्रवेश / नया पंजीकरण",
+        lblPushp: "🌸 कुल पुष्प अंक", lblToday: "📅 आज के मौके", lblDeeds: "✅ कुल अच्छे काम",
+        declareTitle: "🌟 आज का अच्छा सामाजिक कार्य घोषित करें",
+        declareDesc: "रोज़ाना अधिकतम 3 अच्छे कार्यों की घोषणा कर सकते हैं। हर कार्य पर +10 प्रेम प्रतीक पुष्प अंक मिलेंगे।",
+        recentTitle: "🕒 आपके आज के घोषित कार्य",
+        deedsListTitle: "📜 100 अच्छे कामों की सूची",
+        idTitle: "सदस्य पहचान पत्र (Pehchan Patra)",
+        idName: "नाम:", idCode: "सहयोग कोड:", idPushp: "प्रेम प्रतीक पुष्प:", idDeeds: "कुल अच्छे कार्य:",
+        printId: "🖨️ पहचान पत्र सेव / प्रिंट करें",
+        ebookTitle: "📚 ई-बुक कॉर्नर और बोलकर सुनने की सुविधा (TTS)",
+        iqTitle: "🧠 बच्चों का IQ कॉर्नर (पज़ल)",
+        linksTitle: "🌐 आधिकारिक वेबसाइट व सोशल मीडिया",
+        navHome: "संकल्प", navDeeds: "100 काम", navId: "पहचान पत्र", navEbook: "ई-बुक", navIq: "IQ व लिंक"
+      },
+      en: {
+        org: "Presented by Samajik Sahyog Tantra",
+        appName: "Prem Prateek Pushp (PPP)",
+        mainSlogan: "“Hold the hand of society, you will never need to touch anyone's feet”",
+        s1: "Smile on every face and creation of a new humanity",
+        s2: "Let us shape our world with knowledge, science, and full dedication",
+        s3: "Strategy of development, freedom from poverty",
+        disclaimer: "⚠️ Clear Notice: 'Prem Prateek / Pushp' are ONLY symbolic appreciation points for good social deeds. They are NOT any form of money, coin, digital/physical currency, or wealth.",
+        loginTitle: "Member Login / New Registration",
+        lblPushp: "🌸 Total Pushp", lblToday: "📅 Today's Limit", lblDeeds: "✅ Good Deeds",
+        declareTitle: "🌟 Declare Today's Good Social Deed",
+        declareDesc: "You can declare up to 3 good deeds daily. Each deed awards +10 Prem Prateek Pushp points.",
+        recentTitle: "🕒 Your Deeds Declared Today",
+        deedsListTitle: "📜 List of 100 Good Deeds",
+        idTitle: "Member Identity Card (Pehchan Patra)",
+        idName: "Name:", idCode: "Member Code:", idPushp: "Prem Prateek Pushp:", idDeeds: "Total Good Deeds:",
+        printId: "🖨️ Save / Print ID Card",
+        ebookTitle: "📚 E-Book Corner & Voice Reader (TTS)",
+        iqTitle: "🧠 Kids IQ Corner (Puzzles)",
+        linksTitle: "🌐 Official Website & Social Links",
+        navHome: "Home", navDeeds: "100 Deeds", navId: "ID Card", navEbook: "E-Books", navIq: "IQ & Links"
+      }
+    };
+
+    const puzzles = [
+      { q: "1) संख्या श्रृंखला पूरी करें: 2, 4, 8, 16, ?", opts: ["24", "32", "30", "20"], ans: 1 },
+      { q: "2) इनमें से सबसे अलग क्या है? (Odd One Out)", opts: ["सूरज", "चाँद", "तारे", "किताब"], ans: 3 },
+      { q: "3) अगर 1 पेड़ हमें छाया देता है और हम 5 नए पेड़ लगाते हैं, तो कुल कितने पेड़ हुए?", opts: ["5", "6", "4", "7"], ans: 1 },
+      { q: "4) पैटर्न पहचानें: A, C, E, G, ?", opts: ["H", "I", "J", "K"], ans: 1 },
+      { q: "5) किस चीज़ को जितना बाँटोगे, वह उतनी ही बढ़ेगी?", opts: ["पैसा", "ज्ञान और प्रेम", "पानी", "कागज"], ans: 1 }
+    ];
+
+    function showToast(msg) {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.classList.remove("hidden");
+      setTimeout(() => t.classList.add("hidden"), 3500);
+    }
+
+    function toggleLang() {
+      currentLang = currentLang === "hi" ? "en" : "hi";
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if (i18n[currentLang][key]) el.textContent = i18n[currentLang][key];
+      });
+    }
+
+    function toggleAuthMode() {
+      isRegisterMode = !isRegisterMode;
+      document.getElementById("nameWrap").classList.toggle("hidden", !isRegisterMode);
+      document.getElementById("authActionBtn").textContent = isRegisterMode ? "खाता बनाएं (Register)" : "लॉगिन करें (Login)";
+      document.getElementById("toggleAuthBtn").textContent = isRegisterMode ? "पहले से खाता है? लॉगिन करें" : "नया खाता बनाएं (Register)";
+    }
+
+    function buildSahyogCode(userId) {
+      return "PPP-" + String(userId || "").substring(0, 6).toUpperCase();
+    }
+
+    function getFallbackName(user, prof) {
+      const profName = (prof && prof.name) ? String(prof.name).trim() : "";
+      const metaName = (user && user.user_metadata && user.user_metadata.name) ? String(user.user_metadata.name).trim() : "";
+      const emailPart = (user && user.email) ? user.email.split("@")[0].trim() : "";
+      return profName || pendingRegisterName || metaName || emailPart || "सहयोगी मित्र";
+    }
+
+    async function saveNameAndCodeToProfiles(user, nameToSave, codeToSave) {
+      try {
+        const { data: existing } = await sb.from("profiles").select("id, name, sahyog_code").eq("id", user.id).maybeSingle();
+        if (existing) {
+          const updates = {};
+          if (!existing.name || !String(existing.name).trim() || (pendingRegisterName && existing.name !== pendingRegisterName)) {
+            updates.name = nameToSave;
+          }
+          if (!existing.sahyog_code || !String(existing.sahyog_code).trim()) {
+            updates.sahyog_code = codeToSave;
+          }
+          if (Object.keys(updates).length > 0) {
+            await sb.from("profiles").update(updates).eq("id", user.id);
+          }
+        } else {
+          await sb.from("profiles").insert({
+            id: user.id,
+            name: nameToSave,
+            sahyog_code: codeToSave
+          });
+        }
+      } catch (_e) {
+        // अगर RLS से insert/update रुके तो भी UI में नाम और कोड दिखते रहेंगे
+      }
+    }
+
+    async function handleAuth() {
+      const email = document.getElementById("emailInput").value.trim();
+      const password = document.getElementById("passwordInput").value.trim();
+      const enteredName = document.getElementById("fullNameInput").value.trim();
+
+      if (!email || password.length < 6) {
+        return showToast("कृपया सही ईमेल और कम से कम 6 अक्षर का पासवर्ड डालें");
+      }
+
+      const btn = document.getElementById("authActionBtn");
+      btn.disabled = true;
+
+      try {
+        if (isRegisterMode) {
+          const finalRegName = enteredName || email.split("@")[0].trim();
+          pendingRegisterName = finalRegName;
+
+          const { data, error } = await sb.auth.signUp({
+            email,
+            password,
+            options: { data: { name: finalRegName } }
+          });
+
+          if (error) {
+            pendingRegisterName = "";
+            return showToast("त्रुटि: " + error.message);
+          }
+
+          if (data && data.user && data.session) {
+            const code = buildSahyogCode(data.user.id);
+            await saveNameAndCodeToProfiles(data.user, finalRegName, code);
+            await loadUserData();
+            showToast("पंजीकरण सफल! स्वागत है 🌸");
+          } else if (data && data.user && !data.session) {
+            showToast("पंजीकरण सफल! कृपया ईमेल कन्फर्म करें (या Supabase में Confirm Email बंद करें)");
+          }
+        } else {
+          pendingRegisterName = "";
+          const { error } = await sb.auth.signInWithPassword({ email, password });
+          if (error) return showToast("लॉगिन त्रुटि: " + error.message);
+          showToast("सफलतापूर्वक लॉगिन हुआ 🌸");
+        }
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function logoutUser() {
+      pendingRegisterName = "";
+      await sb.auth.signOut();
+      location.reload();
+    }
+
+    sb.auth.onAuthStateChange((_event, session) => {
+      if (session && session.user) {
+        currentUser = session.user;
+        document.getElementById("authSection").classList.add("hidden");
+        document.getElementById("appSection").classList.remove("hidden");
+        document.getElementById("bottomNav").classList.remove("hidden");
+        document.getElementById("logoutBtn").classList.remove("hidden");
+        loadUserData();
+        loadGoodDeeds();
+        renderPuzzle();
+      } else {
+        currentUser = null;
+        document.getElementById("authSection").classList.remove("hidden");
+        document.getElementById("appSection").classList.add("hidden");
+        document.getElementById("bottomNav").classList.add("hidden");
+        document.getElementById("logoutBtn").classList.add("hidden");
+      }
+    });
+
+    async function loadUserData() {
+      if (!currentUser) return;
+
+      // तुरंत पहचान पत्र भरें ताकि 1 सेकंड भी खाली न दिखे
+      const defaultCode = buildSahyogCode(currentUser.id);
+      document.getElementById("idCardName").textContent = getFallbackName(currentUser, null);
+      document.getElementById("idCardCode").textContent = defaultCode;
+
+      let { data: prof } = await sb.from("profiles").select("*").eq("id", currentUser.id).maybeSingle();
+
+      const resolvedName = getFallbackName(currentUser, prof);
+      const resolvedCode = (prof && prof.sahyog_code && String(prof.sahyog_code).trim())
+        ? String(prof.sahyog_code).trim()
+        : defaultCode;
+
+      // अगर profiles में name या sahyog_code खाली हो (या नया यूजर हो), तो सेव करें
+      if (!prof || !prof.name || !String(prof.name).trim() || !prof.sahyog_code || !String(prof.sahyog_code).trim() || (pendingRegisterName && prof.name !== pendingRegisterName)) {
+        await saveNameAndCodeToProfiles(currentUser, resolvedName, resolvedCode);
+        const refreshed = await sb.from("profiles").select("*").eq("id", currentUser.id).maybeSingle();
+        if (refreshed && refreshed.data) prof = refreshed.data;
+      }
+
+      const finalDisplayName = getFallbackName(currentUser, prof);
+      const finalDisplayCode = (prof && prof.sahyog_code && String(prof.sahyog_code).trim())
+        ? String(prof.sahyog_code).trim()
+        : defaultCode;
+      const pushpPts = (prof && prof.pushp_points != null) ? prof.pushp_points : 0;
+      const deedsCnt = (prof && prof.deeds_count != null) ? prof.deeds_count : 0;
+
+      document.getElementById("statPushp").textContent = pushpPts;
+      document.getElementById("statDeeds").textContent = deedsCnt;
+      document.getElementById("idCardName").textContent = finalDisplayName;
+      document.getElementById("idCardCode").textContent = finalDisplayCode;
+      document.getElementById("idCardPushp").textContent = pushpPts + " 🌸";
+      document.getElementById("idCardDeeds").textContent = deedsCnt;
+
+      pendingRegisterName = "";
+
+      const todayIST = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
+      const { data: logs } = await sb.from("deed_logs")
+        .select("*").eq("user_id", currentUser.id).eq("deed_date", todayIST)
+        .order("created_at", { ascending: false });
+
+      todayCount = logs ? logs.length : 0;
+      document.getElementById("statToday").textContent = `${todayCount} / 3`;
+
+      const listEl = document.getElementById("todayLogsList");
+      if (!logs || logs.length === 0) {
+        listEl.textContent = "आज अभी तक कोई कार्य घोषित नहीं किया गया है।";
+      } else {
+        listEl.innerHTML = "";
+        logs.forEach(item => {
+          const div = document.createElement("div");
+          div.className = "deed-item";
+          div.textContent = `🌸 ${item.deed_title} (+${item.pushp_earned})`;
+          listEl.appendChild(div);
+        });
+      }
+    }
+
+    function extractDeedText(row) {
+      return row.title || row.name || row.deed || row.task || row.task_name || row.kaam || row.work || row.description ||
+        Object.values(row).find(v => typeof v === "string" && v.trim().length > 2) || "अच्छा सामाजिक कार्य";
+    }
+
+    async function loadGoodDeeds() {
+      const { data, error } = await sb.from(CONFIG.DEEDS_TABLE).select("*").limit(150);
+      const box = document.getElementById("deedsListContainer");
+      if (error || !data) {
+        box.textContent = "100 कामों की सूची (ppp_tasks) लोड नहीं हो सकी। कृपया Supabase में RLS Select Policy जांचें।";
+        return;
+      }
+      allDeeds = data.map(extractDeedText);
+      renderDeeds();
+    }
+
+    function renderDeeds() {
+      const q = (document.getElementById("deedSearch").value || "").toLowerCase();
+      const box = document.getElementById("deedsListContainer");
+      box.innerHTML = "";
+      const filtered = allDeeds.filter(t => t.toLowerCase().includes(q));
+      if (filtered.length === 0) {
+        box.textContent = "कोई कार्य नहीं मिला।";
+        return;
+      }
+      filtered.forEach((text, i) => {
+        const div = document.createElement("div");
+        div.className = "deed-item";
+        const span = document.createElement("span");
+        span.className = "deed-text";
+        span.textContent = `${i + 1}. ${text}`;
+        const btn = document.createElement("button");
+        btn.className = "btn btn-sm";
+        btn.textContent = "घोषित करें";
+        btn.onclick = () => submitGoodDeed(text);
+        div.appendChild(span);
+        div.appendChild(btn);
+        box.appendChild(div);
+      });
+    }
+
+    function declareDeedFromInput() {
+      const val = document.getElementById("customDeedInput").value.trim();
+      if (!val) return showToast("कृपया पहले कोई अच्छा काम लिखें या '100 काम' सूची से चुनें");
+      submitGoodDeed(val);
+    }
+
+    async function submitGoodDeed(deedTitle) {
+      if (isSubmitting) return;
+      if (todayCount >= 3) {
+        return showToast("आज के 3 मौके पूरे हो चुके हैं! कल फिर नए अच्छे काम करें 🌸");
+      }
+      isSubmitting = true;
+      try {
+        const { data, error } = await sb.rpc("submit_good_deed", { p_deed_title: deedTitle, p_points: 10 });
+        if (error) return showToast("त्रुटि: " + error.message);
+        if (data && data.success) {
+          document.getElementById("customDeedInput").value = "";
+          showToast("बहुत सुंदर! +10 प्रेम प्रतीक पुष्प मिले 🌸");
+          await loadUserData();
+        } else if (data && data.error === "limit_reached") {
+          showToast("आज की अधिकतम 3 कार्यों की सीमा पूरी हो गई है!");
+        }
+      } finally {
+        isSubmitting = false;
+      }
+    }
+
+    async function rewardEngagement(pts, msg) {
+      if (!currentUser) return;
+      const { data } = await sb.rpc("add_activity_pushp", { p_points: pts });
+      if (data && data.success) {
+        document.getElementById("statPushp").textContent = data.pushp_points;
+        document.getElementById("idCardPushp").textContent = data.pushp_points + " 🌸";
+        if (msg) showToast(msg);
+      }
+    }
+
+    setInterval(() => {
+      if (currentUser && !document.hidden) {
+        rewardEngagement(1, "ऐप सक्रिय उपयोग के लिए +1 पुष्प 🌸");
+      }
+    }, 60000);
+
+    function speakText() {
+      if (!("speechSynthesis" in window)) {
+        return showToast("आपके फोन ब्राउज़र में TTS उपलब्ध नहीं है");
+      }
+      window.speechSynthesis.cancel();
+      const text = document.getElementById("ttsText").value.trim();
+      if (!text) return;
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = currentLang === "hi" ? "hi-IN" : "en-IN";
+      utter.rate = 0.95;
+      window.speechSynthesis.speak(utter);
+      rewardEngagement(2, "ई-बुक सुनने के लिए +2 पुष्प 🌸");
+    }
+
+    function stopSpeech() {
+      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    }
+
+    function renderPuzzle() {
+      const p = puzzles[puzzleIndex % puzzles.length];
+      document.getElementById("iqQuestion").textContent = p.q;
+      document.getElementById("iqFeedback").textContent = "";
+      const box = document.getElementById("iqOptions");
+      box.innerHTML = "";
+      p.opts.forEach((opt, idx) => {
+        const b = document.createElement("button");
+        b.className = "iq-opt";
+        b.textContent = opt;
+        b.onclick = () => {
+          const fb = document.getElementById("iqFeedback");
+          if (idx === p.ans) {
+            fb.style.color = "#065f46";
+            fb.textContent = "✅ बिल्कुल सही उत्तर! शाबाश!";
+            if (!solvedPuzzles.has(puzzleIndex)) {
+              solvedPuzzles.add(puzzleIndex);
+              rewardEngagement(3, "IQ पज़ल हल करने पर +3 पुष्प 🌸");
+            }
+          } else {
+            fb.style.color = "#991b1b";
+            fb.textContent = "❌ पुनः प्रयास करें!";
+          }
+        };
+        box.appendChild(b);
+      });
+    }
+
+    function nextPuzzle() {
+      puzzleIndex = (puzzleIndex + 1) % puzzles.length;
+      renderPuzzle();
+    }
+
+    function switchTab(tabId, btn) {
+      document.querySelectorAll(".tab-pane").forEach(el => el.classList.add("hidden"));
+      document.getElementById("tab-" + tabId).classList.remove("hidden");
+      document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      if (tabId === "id" && currentUser) {
+        loadUserData();
+      }
+    }
+  </script>
+</body>
+</html>
